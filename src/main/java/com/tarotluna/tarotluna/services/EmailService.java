@@ -8,10 +8,9 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import javax.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.tarotluna.tarotluna.EmailDetails;
 
@@ -82,12 +81,11 @@ public class EmailService {
                 });
 
         try {
-          
             MimeMessage msg = new MimeMessage(session);
-            MimeMessageHelper helper = new MimeMessageHelper(msg, true);  // true = multipart message;
+            MimeMessageHelper helper = new MimeMessageHelper(msg, true);   // true = multipart message
             helper.setTo(email.getRecipient());
             helper.setSubject(email.getSubject());
-            helper.setFrom(sender, "Luna Stella");
+            helper.setFrom(sender, "MyRecipe");
             // true = text/html
             helper.setText(email.getMsgBody(), true);
 

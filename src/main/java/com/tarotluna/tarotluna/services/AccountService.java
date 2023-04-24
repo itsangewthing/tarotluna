@@ -48,7 +48,7 @@ public class AccountService {
             String msgBody = EmailTemplate.constructWelcome(URLs.URL_HOME + "/#/account/spreads/create");
             String subject = "Welcome to Lunar Stellar, " + username + "!";
             EmailDetails details = new EmailDetails(email, msgBody, subject);
-            emailSvc.sendEmail(details, null);
+            emailSvc.sendEmail(details);
         }
         return result;
     }
