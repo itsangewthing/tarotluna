@@ -10,3 +10,9 @@ At Luna Stella, we take pride in our commitment to accuracy and personalized rea
 We understand that life can be challenging, and sometimes we need guidance and direction to help us navigate through difficult times. Luna Stella is here to provide you with the clarity and direction you need to make informed decisions and find your path forward. Whether you're seeking guidance on your love life, career, or just want to gain insights into your current situation, Luna Stella has got you covered. Tarot readings are personalized to offer guidance and insights, and provide you with the clarity and direction you need to make informed decisions and find your path forward.
 
 So, if you're ready to explore the mystical world of tarot, give Luna Stella a try today!
+
+-------------------------------------------
+
+Intended utilization of .js to animate the cards while holding via mobile app / mouse click-hold. 
+
+
