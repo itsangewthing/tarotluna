@@ -122,7 +122,7 @@ public class CardRESTController {
                                 URLs.URL_HOME + "/#/divination/user/" + cardListId);
                     String subject = "New Divination Created!";
                     EmailDetails details = new EmailDetails(email, msgBody, subject);
-                    emailSvc.sendEmail(details, null);
+                    emailSvc.sendEmail(details);
         
                     resp.setCode(HttpStatus.CREATED.value());
                     resp.setMessage("Divination Created");

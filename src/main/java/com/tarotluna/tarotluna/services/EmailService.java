@@ -64,7 +64,7 @@ public class EmailService {
         }
     }
 
-    public boolean sendEmail(EmailDetails email, Message Message) {
+    public boolean sendEmail(EmailDetails email) {
         if(!isEnabled) return true;
 
         Properties prop = new Properties();
@@ -82,16 +82,16 @@ public class EmailService {
                 });
 
         try {
+          
             MimeMessage msg = new MimeMessage(session);
-            // true = multipart message;
-            MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+            MimeMessageHelper helper = new MimeMessageHelper(msg, true);  // true = multipart message;
             helper.setTo(email.getRecipient());
             helper.setSubject(email.getSubject());
-            helper.setFrom(sender, "MyDivination");
+            helper.setFrom(sender, "Luna Stella");
             // true = text/html
             helper.setText(email.getMsgBody(), true);
 
-            Transport.send(Message);
+            Transport.send(msg);
 
             return true;
 
