@@ -101,4 +101,16 @@ export class TarotService {
         )
     }
 
+
+    getAllCards(): Promise<string[]> {
+        const headers = new HttpHeaders()
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        return firstValueFrom(
+            this.httpClient.get<string[]>('/api/mealdb/areas', { headers})
+        )
+    }
+
+
+
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-create',
@@ -14,6 +15,7 @@ export class CreateComponent implements OnInit{
       errorMsg: string = ""
       isLoggedIn: boolean = false
       isLoading: boolean = false
+      onSubmitForm: any;
 
       constructor(private fb: FormBuilder, private accSvc: AccountService, private router: Router) { }
 
@@ -52,7 +54,7 @@ export class CreateComponent implements OnInit{
         this.accSvc.createAccount(username, email, pwd)
         .then(result=>{
           this.isLoading = false
-          alert("Account created successfull!")
+          alert("Account created successfully!")
           this.router.navigate(['/'])
         })
         .catch(error=>{

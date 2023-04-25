@@ -1,6 +1,7 @@
 import { Card } from "./card";
 
 export interface CardList extends Card{
+[x: string]: any|string;
     user: boolean;
     name_short: string;
     name: string;

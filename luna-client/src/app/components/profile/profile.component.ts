@@ -12,6 +12,12 @@ import { TarotService } from 'src/app/services/tarot.service';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+onAddReadings() {
+throw new Error('Method not implemented.');
+}
+onRemoveReadings(_t121: number) {
+throw new Error('Method not implemented.');
+}
 
   isLoggedIn: boolean = false;
   cardLists: CardList[] = []
@@ -21,6 +27,8 @@ export class ProfileComponent implements OnInit {
   types: string[] = ['Major']
   username!: string
   isLoading: boolean = true;
+  savedreadings!: FormGroup<any>;
+  cardsArray: any;
 
 
   constructor(private router: Router, private tarotSvc: TarotService, private fb: FormBuilder, private accSvc:AccountService) { }
@@ -35,14 +43,14 @@ export class ProfileComponent implements OnInit {
             this.isLoading = false;
 
             this.username = this.accSvc.userLoggedIn?.username ?? ''
-            this.mealDbSvc.getAllAreas()
+            this.tarotSvc.getRandomCard()
             .then(result=>{
-              this.areas = result;
+              this.randomCard = result;
             })
             .then(result=>{
-              this.mealDbSvc.getAllCategories()
+              this.tarotSvc.getCardLists()
               .then(result=>{
-                this.categories = result;
+                this.cardLists = result;
               })
               .catch(error=>{
                 console.error(">>> error: ", error)
@@ -52,7 +60,7 @@ export class ProfileComponent implements OnInit {
               console.error(">>> error: ", error)
             })
         
-            this.updateRecipes()
+            this.updateCardList()
           })
           .catch(error=>{
             this.router.navigate(['/'])
@@ -77,39 +85,35 @@ export class ProfileComponent implements OnInit {
           })
         }
       
-        private createForm(c?: Card) : FormGroup {
-          this.createIngredientItems(c?.card, c?.cardlist)
+        private createForm(c?: CardList) : FormGroup {
+          this.createCardListItems(c?.card, c?.['cardlists'])
           return this.fb.group({
-            cardListId: this.fb.control<string>(c?.cardListId || ''),
+            cardListId: this.fb.control<string>(c?.cardList || ''),
             name: this.fb.control<string>(c?.name || '', [Validators.required]),
-            category: this.fb.control<string>(c?.category || '', [Validators.required]),
-            area: this.fb.control<string>(c?.country || '', [Validators.required]),
-            instructions: this.fb.control<string>(c?.instructions || '', [Validators.required]),
-            youtubeLink: this.fb.control<string>(c?.youtubeLink || ''),
-            Card: this.ingredientsArray
+            cardLists: this.fb.control<string>(c?.cardList)
           })
         }
       
-        private createIngredientItems(ingredients: string[] = [], measurements: string[] = []) {
-          this.ingredientsArray = this.fb.array([])
-          for(let i = 0; i < ingredients.length; i++) {
-            this.ingredientsArray.push(this.createIngredientItem(ingredients[i], measurements[i]))
+        private createCardListItems(card: string[] = [], cardList: string[] = []) {
+          this.cardsArray = this.fb.array([])
+          for(let i = 0; i < this.cardLists.length; i++) {
+            this.cardsArray.push(this.createCardListItems(cards[i], cardList[i]))
           }
         }
       
-        private createIngredientItem(i: string, m: string) {
+        private createCardListItems(i: string, m: string) {
           return this.fb.group({
-            measurement: this.fb.control<string>(m, [Validators.required]),
-            ingredient: this.fb.control<string>(i, [Validators.required])
+            card: this.fb.control<string>(m, [Validators.required]),
+            cardList: this.fb.control<string>(i, [Validators.required])
           })
         }
       
         onAddIngredient() {
-          this.ingredientsArray.push(this.createIngredientItem('',''))
+          this.cardsArray.push(this.createCardListItems('',''))
         }
       
         onRemoveIngredient(idx: number) {
-          this.ingredientsArray.removeAt(idx)
+          this.cardsArray.removeAt(idx)
         }
       
         onDelete(cardListId: string) {
@@ -135,22 +139,17 @@ export class ProfileComponent implements OnInit {
       
         onSubmitEdit() {
           const formData = new FormData()
-          const ingredientsArray: string[] = []
-          const measurementsArray: string[] = []
-          for(let i = 0; i < this.form.get('ingredients')?.value.length; i++) {
-            ingredientsArray.push(this.form.get('ingredients')?.value[i].ingredient)
-            measurementsArray.push(this.form.get('ingredients')?.value[i].measurement)
+          const cardsArray: string[] = []
+          const cardsListsArray: string[] = []
+          for(let i = 0; i < this.form.get('cards')?.value.length; i++) {
+            cardsArray.push(this.form.get('cardList')?.value[i].cards)
+            cardsListsArray.push(this.form.get('cardLists')?.value[i].cardList)
           }
       
-          formData.set('recipeId', this.form.get('recipeId')?.value)
+          formData.set('cardsListId', this.form.get('cardsListId')?.value)
           formData.set('name', this.form.get('name')?.value)
-          formData.set('thumbnail', this.thumbnailImage.nativeElement.files[0])
-          formData.set('category', this.form.get('category')?.value)
-          formData.set('area', this.form.get('area')?.value)
-          formData.set('instructions', this.form.get('instructions')?.value)
-          formData.set('youtubeLink', this.form.get('youtubeLink')?.value)
-          formData.set('ingredients', ingredientsArray.join(','))
-          formData.set('measurements', measurementsArray.join(','))
+          formData.set('cardsArray', cardsArray.join(','))
+          formData.set('cardsListArray', cardsListsArray.join(','))
           formData.set('email', this.accSvc.userLoggedIn?.email ?? '')
       
           this.isLoading = true;

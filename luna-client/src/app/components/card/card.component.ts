@@ -13,7 +13,7 @@ import { User } from 'src/app/models/user';
 })
 export class RecipeComponent implements OnInit {
 
- card!: Card
+  card!: Card
   isLoading: boolean = true;
 
   constructor(private activatedRoute: ActivatedRoute, private tarotSvc: TarotService, private router: Router, private accSvc:AccountService) { }

@@ -6,22 +6,33 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { MaterialModule } from 'src/material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { TarotService } from './services/tarot.service';
 import { AccountService } from './services/account.service';
-import { GoogleLoginProvider, FacebookLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
 import { CreateCardlistComponent } from './components/create-cardlist/create-cardlist.component';
 import { SearchComponent } from './components/search/search.component';
 import { NotFoundComponent } from './components/error/not-found/not-found.component';
-import { CreateaccComponent } from './components/account/createacc/createacc.component';
-import { LoginaccComponent } from './components/account/loginacc/loginacc.component';
 import { SettingsComponent } from './components/account/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { CreateComponent } from './components/account/create/create.component';
+import { LoginComponent } from './components/account/login/login.component';
+import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
+
 
 
 const appRoutes: Routes =[
-  
+  {path:"", component: LoginComponent},
+  {path:"profile", component: ProfileComponent},
+  {path:"account/create", component: CreateComponent},
+  {path:"account/settings", component: SettingsComponent},
+  {path:"account/cardlists/create", component:CreateCardlistComponent},
+  {path:"search", component:SearchComponent},
+  {path:"cardlist", component: ListRecipesComponent},
+  {path:"cards/category/:cat", component:ListRecipesComponent},
+  {path:"recipes/area/:area", component:ListRecipesComponent},
+  {path:"card/:user/:cardListId", component:AppComponent},
+  {path:"card/:cardListId", component:AppComponent},
+  {path:"**", component: NotFoundComponent}
 ]
 @NgModule({
   declarations: [
@@ -29,8 +40,6 @@ const appRoutes: Routes =[
     CreateCardlistComponent,
     SearchComponent,
     NotFoundComponent,
-    CreateaccComponent,
-    LoginaccComponent,
     SettingsComponent,
     ProfileComponent,
     CreateComponent,
@@ -43,7 +52,10 @@ const appRoutes: Routes =[
     ReactiveFormsModule,
     RouterModule.forRoot(appRoutes, {useHash:true}),
     HttpClientModule,
-    MaterialModule
+    MaterialModule, 
+    SocialLoginModule,
+
+
   ],
   providers: [AccountService, TarotService,{provide: 'SocialAuthServiceConfig',
   useValue: {

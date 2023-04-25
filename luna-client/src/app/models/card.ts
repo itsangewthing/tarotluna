@@ -1,6 +1,8 @@
 
 
 export interface Card{
+  user: boolean;
+category: any;
     
     name_short: string;
     name: string;
@@ -11,7 +13,9 @@ export interface Card{
     desc: string;
     createdBy: string;
     types: string[];
-    card: string[];
+    card: string[
+        
+    ];
 
 }
 
