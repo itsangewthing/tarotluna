@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ import jakarta.json.JsonReader;
 public class CardRepository {
     
 // SQLQUERIES
+
+    
 
     @Autowired
     private JdbcTemplate template;
@@ -68,6 +71,19 @@ public class CardRepository {
 
 
  ///////////////////////////////////
+
+ private static final String SQL_INSERT_RECIPE = "insert into recipe (name, category, country, instructions, youtubeLink, user_id) values (?, ?, ?, ?, ?, ?);";
+ private static final String SQL_INSERT_INGREDIENT = "insert into ingredient (name, measurement, recipe_id) values (?, ?, ?);";
+ private static final String SQL_SELECT_RECIPE_BY_ID = "select * from recipe where recipe_id = ?;";
+ private static final String SQL_SELECT_RECIPE_BY_USER_ID = "select * from recipe where user_id = ?;";
+ private static final String SQL_SELECT_USERNAME_BY_RECIPE_ID = 
+ """
+ select u.username
+ from user as u
+ join recipe as r
+ on u.user_id = r.user_id
+ where r.recipe_id = ?;
+ """;
 
     public int insertNewCardList(byte[] file, int userId) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -139,7 +155,7 @@ public class CardRepository {
                 cardList.add(cListResult.getString("cardListResult"));
             }
 
-            c.setCards(cards);
+            c.setCard(cards);
             c.setCardList(cardListResult);
 
 
@@ -150,7 +166,7 @@ public class CardRepository {
         }
     }
 
-    public List<CardList> getAllCardLists(Integer userId) {
+    public List<CardList> getAllCardListsBy(Integer userId) {
         final SqlRowSet result = template.queryForRowSet(SELECT_CARD_LISTS_BY_USER_ID, userId);
 
         List<CardList> cardLists = new ArrayList<>();
@@ -175,7 +191,6 @@ public class CardRepository {
 
 
 
-
     public boolean deleteCardListById(Integer cardListId) {
         int result = template.update(DELETE_CARD_LIST_BY_ID, cardListId);
         System.out.println("DELETE LIST: " + result);
@@ -190,12 +205,10 @@ public class CardRepository {
 
  
 
-
     public boolean editCardList(Card card, Integer userId) {
         int result = template.update(UPDATE_CARD_LIST, 
-         card.getCardList(),
-         card.getCardListId(),
-         card.getCards(),
+         card.getCard(),
+         card.getCId(),
          card.getCreatedBy(),
          card.getDesc(),
          card.getNhits(),
@@ -205,9 +218,10 @@ public class CardRepository {
         return result > 0;
     }
 
-	public Boolean insertNewCardList(Class<? extends Object> class1, String string) {
-		return null;
-	}
+    public Boolean insertNewCardList(Class<? extends Object> class1, String string) {
+        return null;
+    }
+
 
     
 

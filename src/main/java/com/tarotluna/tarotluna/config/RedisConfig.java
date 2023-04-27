@@ -23,8 +23,8 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private Optional<Integer> redisPort;
 
-    //@Value("${spring.redis.password}")
-    //private String redisPassword;
+    @Value("${spring.redis.password}")
+    private String redisPassword;
 
     @Bean
     @Scope("singleton")

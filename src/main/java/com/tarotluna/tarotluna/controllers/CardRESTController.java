@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.yaml.snakeyaml.events.Event;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.tarotluna.tarotluna.EmailDetails;
@@ -25,7 +27,10 @@ import com.tarotluna.tarotluna.constants.EmailTemplate;
 import com.tarotluna.tarotluna.constants.URLs;
 import com.tarotluna.tarotluna.models.Card;
 import com.tarotluna.tarotluna.models.CardList;
+import com.tarotluna.tarotluna.models.CourtsRank;
 import com.tarotluna.tarotluna.models.Response;
+import com.tarotluna.tarotluna.models.Suit;
+import com.tarotluna.tarotluna.models.Types;
 import com.tarotluna.tarotluna.repository.CardRepository;
 import com.tarotluna.tarotluna.services.EmailService;
 import com.tarotluna.tarotluna.services.TarotService;
@@ -48,11 +53,41 @@ public class CardRESTController {
     
     @Autowired
     private EmailService emailSvc;
+
+ // GET ENUMSSSS ------------
+
+ // 1-------- TYPES
+    @GetMapping("choose")
+    public String displayCardTypesForm(Model model){
+        model.addAttribute("types", "Choose card types");
+        model.addAttribute(new Card());
+        model.addAttribute("types", Types.values());
+        return "choose/types";
+    }
+
+     // 2 -------- COURTSRANK
+    @GetMapping("choose")
+    public String displayCourtsRankForm(Model model){
+        model.addAttribute("courtsRank", "Choose cards by their ranks");
+        model.addAttribute(new Card());
+        model.addAttribute("courtsRank", CourtsRank.values());
+        return "choose/courtsRank";
+    }
     
+    //3---------- SUIT
+    
+    @GetMapping("choose")
+    public String displaySuitForm(Model model){
+        model.addAttribute("suit", "Choose cards by their suit");
+        model.addAttribute(new Card());
+        model.addAttribute("suit", Suit.values());
+        return "choose/suit";
+    }
+
     // SEARCH CARD BY NAME
     @GetMapping(path="/cards/search", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> search(@RequestParam("searchName") String searchName) {
-        List<Card> cards = tarotSvc.search(searchName);
+        List<Card> cards = tarotSvc.search(searchName, cards);
         System.out.println(searchName);
 
         JsonArrayBuilder jab = Json.createArrayBuilder();
@@ -71,7 +106,7 @@ public class CardRESTController {
     public ResponseEntity<String> getRandomCard( @RequestParam(value ="1", required = false) Integer n) {
         System.out.println("scheming through %d to get random card");
 
-        List<Card> card = tarotSvc.getRandomCardByValue(n);
+        List<Card> card = tarotSvc.getARandomCard(n);
         
         JsonArrayBuilder jab = Json.createArrayBuilder();
         for (Card c : card) {
@@ -88,6 +123,8 @@ public class CardRESTController {
         return ResponseEntity.ok(ja.toString());
     }
 
+
+    
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createCardList(MultipartFile file,
             @RequestPart Integer cardList,
@@ -109,7 +146,7 @@ public class CardRESTController {
             cl.setDesc(desc);
             cl.setMeaning_up(meaning_up);
             cl.setMeaning_reverse(meaning_reverse);
-            cl.setType(Types);
+            cl.setTypes(Types);
             cl.setEmail(email);
 
             try {
@@ -132,13 +169,13 @@ public class CardRESTController {
                 } else {
                     //s3Svc.delete(thumbnailOpt.get());
                     resp.setCode(HttpStatus.BAD_REQUEST.value());
-                    resp.setMessage("Something went wrong when creating recipe!");
+                    resp.setMessage("Something went wrong when reading your divination!");
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp.toJson().toString());
                 }
     
             } catch(IOException ex) {
                 resp.setCode(HttpStatus.BAD_REQUEST.value());
-                resp.setMessage("Something went wrong with thumbnail file!");
+                resp.setMessage("!!!");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp.toJson().toString());
             }    
         }

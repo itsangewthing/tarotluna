@@ -22,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// import com.amazonaws.services.s3.metrics.S3ServiceMetric;
 import com.tarotluna.tarotluna.models.Card;
 import com.tarotluna.tarotluna.models.CardList;
 import com.tarotluna.tarotluna.models.User;
@@ -54,7 +53,9 @@ public class TarotService{
 
     private static final String GET_ALL_CARDS = "https://tarot-api.onrender.com/api/v1/cards";
     private static final String GET_A_RANDOM_CARD = "https://tarot-api.onrender.com/api/v1/cards/random?n=1";
-    private static final String INSERT_NEW_CARD_LIST = " ";
+    private static final String GET_THREE_RANDOM_CARDS = "https://tarot-api.onrender.com/api/v1/cards/random?n=3";
+    private static final String GET_FIVE_RANDOM_CARDS = "https://tarot-api.onrender.com/api/v1/cards/random?n=5";
+    private static final String SELECT_CARD_BY_RANKS = "https://tarot-api.onrender.com/api/v1/cards/courts/{ranks} ";
     private static final String SELECT_CARD_LIST_BY_ID ="";
     private static final String SELECT_USERNAME_BY_ID = "";
     private static final String SELECT_CARDS_BY_ID ="";
@@ -64,14 +65,69 @@ public class TarotService{
     private static final String DELETE_CARD_BY_NAME = "";
     private static final String UPDATE_CARD_LIST = "";
 
-
-/* GET ALL CARDS */    
-public List<Card> search(String searchCards) {
+/* GET CARD */    
+public List<Card> searchKeyword(String searchKeyword, Object q, Object suit, Object value, Object type) {
     String uri = UriComponentsBuilder.fromUriString(BASE_URL)
-                        .queryParam("q", searchCards)
-                        .queryParam("suit", "wands")
-                        .queryParam("value", "5")
-                        .queryParam("type", "major","minor")
+                .queryParam("q", q)
+                .queryParam("suit", suit)
+                .queryParam("value", value)
+                .queryParam("type", type)
+                .toUriString();
+
+    System.out.println(searchKeyword);
+    RestTemplate restTemplate = new RestTemplate();
+
+    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+    headers.add("X-RapidAPI-Key", "ddf652f3-9cdc-41d8-a1ae-4fd741185668");
+    headers.add("X-RapidAPI-Host", "https://tarot-api.onrender.com/api/v1");
+
+    HttpEntity<?> entity = new HttpEntity<Object>(headers);
+    HttpEntity<String> resp = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+    String payload = resp.getBody();
+
+    JsonReader reader = Json.createReader(new StringReader(payload));
+    JsonObject result = reader.readObject();
+    JsonArray data = result.getJsonObject("info").getJsonArray("cards");
+    
+    List<Card> cList = new LinkedList<>();
+    for (Integer i = 0; i < data.size(); i++) {
+        cList.add(Card.create(data.getJsonObject(i)));
+    }
+
+    return cList;
+ }
+
+ /* GET ALL CARDS */    
+public List<Card> getAllCards(String getAllCards, Object query) {
+
+String searchUrl = UriComponentsBuilder.fromUriString(GET_ALL_CARDS)
+    .queryParam("q", query)
+    .toUriString();
+
+    System.out.println(getAllCards);
+
+RequestEntity<Void> req = RequestEntity.get(searchUrl).accept(MediaType.APPLICATION_JSON).build();
+RestTemplate template = new RestTemplate();
+ResponseEntity<String> resp = template.exchange(req, String.class);
+String payload = resp.getBody();
+
+JsonReader reader = Json.createReader(new StringReader(payload));
+JsonObject result = reader.readObject();
+JsonArray data = result.getJsonObject("data").getJsonArray("results");
+
+
+List<Card> cList = new LinkedList<>();
+for (Integer i = 0; i < data.size(); i++) {
+cList.add(Card.create(data.getJsonObject(i)));
+}
+
+return cList;
+}
+
+/* SEARCH CARDS */    
+public List<Card> search(String searchCards, Object query) {
+            String uri = UriComponentsBuilder.fromUriString(URL_SEARCH_NAME)
+                        .queryParam("q", query)
                         .toUriString();
 
     System.out.println(searchCards);
@@ -100,50 +156,141 @@ public List<Card> search(String searchCards) {
 
 /* GET 1 RANDOM CARD */
 
-public List<Card> getRandomCardByValue(Integer n) {
-    
-    Long ts = System.currentTimeMillis();
-    // String signature = "%d%s%s".formatted(ts, apiKey);
-    String hash = "";
-/*  GET_A_RANDOM_CARD_URL = "https://tarot-api.onrender.com/api/v1/cards/random?n=1";
-    returns 1 number of unique random cards, else returns all cards in random order
-    ?n = 1  
+        public List<Card> getARandomCard(Integer n) {
+            
+            // Long ts = System.currentTimeMillis();
+            // String signature = "%d%s%s".formatted(ts, apiKey);
+            // String hash = "";
+        /*  GET_A_RANDOM_CARD_URL = "https://tarot-api.onrender.com/api/v1/cards/random?n=1";
+            returns 1 number of unique random cards, else returns all cards in random order
+            ?n = 1  
 
-     */
+            */
 
-     String searchUrl = UriComponentsBuilder.fromUriString(GET_A_RANDOM_CARD)
-        .path("n")
-        .queryParam("ts", ts)
-        .queryParam("apikey", apiKey)
-        .queryParam("hash", hash)
-        .toUriString();
+            String searchUrl = UriComponentsBuilder.fromUriString(GET_A_RANDOM_CARD)
+                .queryParam("n", 1)
+                .toUriString();
 
-        if (searchUrl.contains("%7D")) {
-            searchUrl = searchUrl.replace("%7D", "");
-        }
-        System.out.println("url > " + searchUrl);
- 
-        RequestEntity<Void> req = RequestEntity.get(searchUrl).accept(MediaType.APPLICATION_JSON).build();
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> resp = template.exchange(req, String.class);
-        String payload = resp.getBody();
+                // if (searchUrl.contains("%7D")) {
+                //     searchUrl = searchUrl.replace("%7D", "");
+                // }
+                // System.out.println("url > " + searchUrl);
         
-        JsonReader reader = Json.createReader(new StringReader(payload));
-        JsonObject result = reader.readObject();
-        JsonArray data = result.getJsonObject("data").getJsonArray("results");
+                RequestEntity<Void> req = RequestEntity.get(searchUrl).accept(MediaType.APPLICATION_JSON).build();
+                RestTemplate template = new RestTemplate();
+                ResponseEntity<String> resp = template.exchange(req, String.class);
+                String payload = resp.getBody();
+                
+                JsonReader reader = Json.createReader(new StringReader(payload));
+                JsonObject result = reader.readObject();
+                JsonArray data = result.getJsonObject("data").getJsonArray("results");
 
-        List<Card> cList = new LinkedList<>();
-            for (Integer i = 0; i < data.size(); i++) {
-                cList.add(Card.create(data.getJsonObject(i)));
-            }
+                List<Card> cList = new LinkedList<>();
+                    for (Integer i = 0; i < data.size(); i++) {
+                        cList.add(Card.create(data.getJsonObject(i)));
+                    }
 
-            return cList;
-}
+                    return cList;
+        }
+
+/* GET 3 RANDOM CARDS */
+
+        public List<Card> getThreeRandomCards(Integer n) {
+        /*  "https://tarot-api.onrender.com/api/v1/cards/random?n=3";
+            */
+
+            String searchUrl = UriComponentsBuilder.fromUriString(GET_THREE_RANDOM_CARDS)
+                .queryParam("n", 3)
+                .toUriString();
+
+        
+                RequestEntity<Void> req = RequestEntity.get(searchUrl).accept(MediaType.APPLICATION_JSON).build();
+                RestTemplate template = new RestTemplate();
+                ResponseEntity<String> resp = template.exchange(req, String.class);
+                String payload = resp.getBody();
+                
+                JsonReader reader = Json.createReader(new StringReader(payload));
+                JsonObject result = reader.readObject();
+                JsonArray data = result.getJsonObject("data").getJsonArray("results");
+
+                List<Card> cList = new LinkedList<>();
+                    for (Integer i = 0; i < data.size(); i++) {
+                        cList.add(Card.create(data.getJsonObject(i)));
+                    }
+
+                    return cList;
+        }
+
+
+/* GET 5 RANDOM CARDS */
+
+        public List<Card> getFiveRandomCards(Integer n) {
+            
+        /*  GET_A_RANDOM_CARD_URL = "https://tarot-api.onrender.com/api/v1/cards/random?n=5";
+            */
+
+            String searchUrl = UriComponentsBuilder.fromUriString(GET_FIVE_RANDOM_CARDS)
+                .queryParam("n", 5)
+                .toUriString();
+
+        
+                RequestEntity<Void> req = RequestEntity.get(searchUrl).accept(MediaType.APPLICATION_JSON).build();
+                RestTemplate template = new RestTemplate();
+                ResponseEntity<String> resp = template.exchange(req, String.class);
+                String payload = resp.getBody();
+                
+                JsonReader reader = Json.createReader(new StringReader(payload));
+                JsonObject result = reader.readObject();
+                JsonArray data = result.getJsonObject("data").getJsonArray("results");
+
+                List<Card> cList = new LinkedList<>();
+                    for (Integer i = 0; i < data.size(); i++) {
+                        cList.add(Card.create(data.getJsonObject(i)));
+                    }
+
+                    return cList;
+        }
+
+/* SELECT ALL COURT RANKS */
+// https://tarot-api.onrender.com/api/v1/cards/search?q=q
+
+public List<Card> getCardByRank(Object rank) {
+            
+        String searchUrl = UriComponentsBuilder.fromUriString(SELECT_CARD_BY_RANKS)
+            .queryParam("rank", rank)
+            .toUriString();
+
+    
+            RequestEntity<Void> req = RequestEntity.get(searchUrl).accept(MediaType.APPLICATION_JSON).build();
+            RestTemplate template = new RestTemplate();
+            ResponseEntity<String> resp = template.exchange(req, String.class);
+            String payload = resp.getBody();
+            
+            JsonReader reader = Json.createReader(new StringReader(payload));
+            JsonObject result = reader.readObject();
+            JsonArray data = result.getJsonObject("data").getJsonArray("results");
+
+            List<Card> cList = new LinkedList<>();
+                for (Integer i = 0; i < data.size(); i++) {
+                    cList.add(Card.create(data.getJsonObject(i)));
+                }
+
+                return cList;
+    }
 
 
 
 
-// CREATE CARD READING
+
+
+
+
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+
+
+// CREATE CARD LIST 
+
     @Transactional
     public int createCardList(CardList cl, String email, byte[] file) {
         Optional<User> user = accRepo.findUserByEmail(email);
@@ -158,7 +305,7 @@ public List<Card> getRandomCardByValue(Integer n) {
             throw new IllegalArgumentException();
         }
 
-        cl.setCardListId(cardListId.toString());
+        cl.setCListId(cardListId.toString());
 
         cardRepo.insertNewCardList(null, cardListId);
         Integer result = cardRepo.insertNewCardList(file, cardListId);
@@ -182,13 +329,15 @@ public List<Card> getRandomCardByValue(Integer n) {
         }
 
         cardRepo.editCardList(card, userOpt.get().getUserId());
-        Object cardE = card.getCards();
+        Object cardE = card.getCard();
 
 
         cardRepo.deleteCardByName();
         return cardRepo.insertNewCardList(cardE.getClass(), cardE.toString());
     }
 
+
+// GET CARDLSITS BY ID
     public Optional<Card> getCardListsById(String cardListId) {
         try{
             Integer cId = Integer.parseInt(cardListId);
@@ -198,6 +347,8 @@ public List<Card> getRandomCardByValue(Integer n) {
         }  
     }
 
+
+/////////////////// GET CARD LIST BY EMAIL
     public List<CardList> getCardListByEmail(String email) {
         Optional<User> user = accRepo.findUserByEmail(email);
 
@@ -205,23 +356,23 @@ public List<Card> getRandomCardByValue(Integer n) {
             return new ArrayList<CardList>();
         }
 
-        return cardRepo.getAllCardLists(user.get().getUserId());
-    }
-
-    public List<CardList> getCardListsByName(String name) {
-        return CardList.getCardListsByName(name);
+        return cardRepo.getAllCardListsBy(user.get().getUserId());
     }
 
 
+////////// DELETE CARD LIST BY ID
     @Transactional
-    public boolean deleteCardListById(String cardListId) {
-        int cId = Integer.parseInt(cardListId);
+    public boolean deleteCardListById(String i) {
+        int cId = Integer.parseInt(i);
         if(cardRepo.deleteCardListById(cId)) {
    
             return cardRepo.deleteCardListById(cId);
         }
         return false;
     }
+
+
+////////// GET CARD LISTS    
 
     public List<CardList> getCardLists(String query) {
         final String searchUrl = UriComponentsBuilder.fromUriString(URL_SEARCH_NAME)
@@ -250,32 +401,7 @@ public List<Card> getRandomCardByValue(Integer n) {
         return cardLists;
     }
 
-    public List<Card> getAllCards(String query) {
-        final String searchUrl = UriComponentsBuilder.fromUriString(GET_ALL_CARDS)
-                .queryParam("q", query)
-                .toUriString();
-
-        RestTemplate restTemplate = new RestTemplate();
-        RequestEntity<Void> req = RequestEntity.get(searchUrl)
-                .accept(MediaType.APPLICATION_JSON)
-                .build();
-        ResponseEntity<String> resp = restTemplate.exchange(req, String.class);
-        final String payload = resp.getBody();
-        JsonReader reader = Json.createReader(new StringReader(payload));
-        JsonArray jTarots = null;
-        List<Card> cards = new ArrayList<Card>();
-        try {
-            jTarots = reader.readObject().getJsonArray("allcards");
-            for (int i = 0; i < jTarots.size(); i++) {
-                Card cl = CardList.convert(jTarots.getJsonObject(i));
-                cards.add(cl);
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-
-        return cards;
     }
+    
 
-
-}
+   

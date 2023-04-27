@@ -11,6 +11,7 @@ public class User {
     private boolean newsletter;
     private String email;
     private String sessionId = "";
+    private String createdBy = "";
     
     public String getSessionId() {
         return sessionId;
@@ -41,6 +42,13 @@ public class User {
     }
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public static User create(final SqlRowSet rs) {

@@ -1,162 +1,148 @@
+
 package com.tarotluna.tarotluna.models;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 
-public class CardList{
+public class CardList extends Card {
+
+
 
     private Integer nhits;
-    private String cardListId;
-    private SqlRowSet cardList;
-    private String name_short;
-    private String name;
-    private String value;
-    private Integer value_int;
-    private String meaning_up;
-    private String meaning_reverse;
-    private String desc;
-    protected Object cards;
-    private JsonValue type;
+    private String cListId;
+    private List<String> items = new LinkedList<>();
 
-            public Integer getNhits() {
-                return this.nhits;
-            }
 
-            public void setNhits(Integer nhits) {
-                this.nhits = nhits;
-            }
 
-            public String getName_short() {
-                return this.name_short;
-            }
+    public CardList(Types types) {
+        super(types);
+        //TODO Auto-generated constructor stub
+    }
+ ////////////////////////////   
 
-            public void setName_short(String name_short) {
-                this.name_short = name_short;
-            }
+   
+ 
 
-            public String getName() {
-                return this.name;
-            }
+    public Integer getNhits() {
+        return this.nhits;
+    }
 
-            public void setName(String name) {
-                this.name = name;
-            }
+    public void setNhits(Integer nhits) {
+        this.nhits = nhits;
+    }
 
-            public String getValue() {
-                return this.value;
-            }
+    public String getCListId() {
+        return this.cListId;
+    }
 
-            public void setValue(String value) {
-                this.value = value;
-            }
+    public void setCListId(String cListId) {
+        this.cListId = cListId;
+    }
 
-            public Integer getValue_int() {
-                return this.value_int;
-            }
+    public List<String> getItems() {
+        return this.items;
+    }
 
-            public void setValue_int(Integer value_int) {
-                this.value_int = value_int;
-            }
+    public void setItems(List<String> items) {
+        List<String> newItemList = new LinkedList<>();
+        for (String i : items){
+            newItemList.add(i);
+        }
+        
+        this.items = newItemList;
+    }
 
-            public String getMeaning_up() {
-                return this.meaning_up;
-            }
+    
+    //  public List<String> getCourtsRank() {
+    //             return this.getCourtsRank();
+    //         }
 
-            public void setMeaning_up(String meaning_up) {
-                this.meaning_up = meaning_up;
-            }
+    //  public void setCourtsRank(List<String> courtsRank) {
+    //     List<String> newCRList = new LinkedList<>();
+    //     for (String cr : courtsRank){
+    //         newCRList.add(cr);
+    //         }
+    //         this.courtsRank = courtsRank;
+    //     }
 
-            public String getMeaning_reverse() {
-                return this.meaning_reverse;
-            }
+    //  public List<String> getSuit() {
+    //             return this.suit;
+    //         }
 
-            public void setMeaning_reverse(String meaning_reverse) {
-                this.meaning_reverse = meaning_reverse;
-            }
+    //   public void setSuit(List<String> suit) {
+    //     List<String> newSList = new LinkedList<>();
+    //     for (String s : suit){
+    //         newSList.add(s);
+    //         }
+    //         this.suit = suit;
+    //     }
 
-            public String getDesc() {
-                return this.desc;
-            }
-
-            public void setDesc(String desc) {
-                this.desc = desc;
-            }
-
-            public Object getCards() {
-                return this.cards;
-            }
-
-            public void setCards(Object cards) {
-                this.cards = cards;
-            }
-
-            public JsonValue getType() {
-                return this.type;
-            }
-
-            public void setType(JsonValue type) {
-                this.type = type;
-            }
-
-            public String getCardListId() {
-                return cardListId;
-            }
-
-            public void setCardListId(String cardListId) {
-                this.cardListId = cardListId;
-            }
-
-            public SqlRowSet getCardList() {
-                return cardList;
-            }
-
-            public void setCardList(CardList cl) {
-                this.cardList = (SqlRowSet) cl;
-            }
+           
+        
 
 //  ---------------------           
         
+        public static List<CardList> getCardListsByName(String name, Integer nhits) {
+            CardList cList = new CardList(null)<>();
+            // cList.setNhits(String.valueOf(SqlRowSet) cListResult)
+
+        return cList;
+        }
     
-            public static Card convert(JsonObject jsonObject) {
-                CardList cardList = new CardList();
-                cardList.setCardListId(jsonObject.getString("cardlistId", ""));
-                cardList.setName(jsonObject.getString("strName", ""));
+            public static CardList convert(JsonObject jsonObject) {
+                CardList cList = new CardList();
+                cList.setCid(jsonObject.getString("clistId", ""));
+                cList.setName(jsonObject.getString("strName", ""));
               
-                return (Card) cardList;
+                return (Card) cList;
             }
         
-            public static CardList convert(final SqlRowSet rs) {
-                CardList cardList = new CardList();
-                cardList.setCardListId(String.valueOf(rs.getInt("cardlist_id")));
-                cardList.setName(rs.getString("name"));
+            private void setCid(String string) {
+            }
 
-                return cardList;
+            public static CardList convert(final SqlRowSet rs) {
+                CardList cList = new CardList();
+                cList.setCid(String.valueOf(rs.getInt("clistId")));
+                cList.setName(rs.getString("name"));
+
+                return cList;
             }
         
             public JsonObject toJson() {
                 return Json.createObjectBuilder()
-                .add("cardlistId", cardListId)
+                .add("clistId", cListId)
                 .add("name", name)
                 .build();
             }
 
-			public static void add(CardList cl) {
-
-                return;
-			}
-
-            public static List<CardList> getCardListsByName(String name2) {
-                return null;
+            public JsonArray itemsList() {
+                JsonArrayBuilder jab = Json.createArrayBuilder();
+                for (String nhits : items) {
+                    jab.add(nhits);
+                }
+                return jab.build();
+            }
+        
+            public static List<String> createItemsListFromJA(JsonArray ja) {
+                List<String> li = new LinkedList<>();
+                for (JsonValue v : ja) {
+                    li.add(v.toString());
+                }
+        
+                return li;
             }
 
-			public void setEmail(String email) {
-			}
+// ------------------------------------------		
+
+
 
 			public boolean next() {
 				return false;

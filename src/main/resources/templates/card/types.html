@@ -1,0 +1,11 @@
+<div class="form-group">
+<label> Types
+<select th:field="${card.types}">
+    <option th:each="type : ${types}"
+            th:value=""${types}
+            th:text="${type.types}">
+    </option>
+
+</select>
+</label>
+</div>

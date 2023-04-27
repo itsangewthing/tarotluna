@@ -29,9 +29,6 @@ public class AccountService {
     @Autowired
     private SessionRepository sessionRepo;
 
-    // @Autowired
-    // private S3ServiceMetric s3Svc;
-
     @Autowired
     private EmailService emailSvc;
 
@@ -83,7 +80,7 @@ public class AccountService {
         sessionRepo.removeSession(email);
         List<CardList> cList = TarotSvc.getCardListByEmail(email);
         cList.forEach(v->{
-            TarotSvc.deleteCardListById(v.getCardListId());
+            TarotSvc.deleteCardListById(v.getCId());
                 //s3Svc.delete(v.getThumbnail());
         });
 

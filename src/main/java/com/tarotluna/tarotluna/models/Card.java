@@ -1,5 +1,6 @@
 package com.tarotluna.tarotluna.models;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -9,25 +10,68 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 
-public class Card extends CardList {
-    private List<String> cardList;
+public class Card  {
+   
     private List<String> card;
-    private String name_short;
-    private String name;
+    private List<String> CourtsRank = new LinkedList<>();
+    private List<String> Suit = new LinkedList<>();
+
+    protected String name;
     private String value;
-    private Integer value_int;
     private String meaning_up;
     private String meaning_reverse;
     private String desc;
-    private String createdBy = "";
-    private JsonValue types;
+    private String cId;
+    private static Types types;
+    private String img;
 
-    public String getName_short() {
-        return this.name_short;
+    public String getImg() {
+        return this.img;
     }
 
-    public void setName_short(String name_short) {
-        this.name_short = name_short;
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+
+    public Types getTypes() {
+        return types;
+    }
+
+    public void setTypes(Types types2) {
+        Card.types = types2;
+    }
+
+    public List<String> getCard() {
+        return this.card;
+    }
+
+    public void setCard(List<String> card) {
+        this.card = card;
+    }
+
+    public List<String> getCourtsRank() {
+        return this.CourtsRank;
+    }
+
+    public void setCourtsRank(List<String> CourtsRank) {
+        this.CourtsRank = CourtsRank;
+    }
+
+    public List<String> getSuit() {
+        return this.Suit;
+    }
+
+    public void setSuit(List<String> Suit) {
+        this.Suit = Suit;
+    }
+
+    public String getCId() {
+        return this.cId;
+    }
+
+    public void setCId(String string) {
+        this.cId = string;
     }
 
     public String getName() {
@@ -44,14 +88,6 @@ public class Card extends CardList {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public Integer getValue_int() {
-        return this.value_int;
-    }
-
-    public void setValue_int(Integer value_int) {
-        this.value_int = value_int;
     }
 
     public String getMeaning_up() {
@@ -78,57 +114,40 @@ public class Card extends CardList {
         this.desc = desc;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
 
-    public JsonValue getTypes() {
-        return this.types;
-    }
-
-    public void setTypes(JsonValue string) {
-        this.types = string;
-    }
 
 
 
     @Override
     public String toString() {
         return "{" +
-            " name_short='" + getName_short() + "'" +
             ", name='" + getName() + "'" +
             ", value='" + getValue() + "'" +
-            ", value_int='" + getValue_int() + "'" +
             ", meaning_up='" + getMeaning_up() + "'" +
             ", meaning_reverse='" + getMeaning_reverse() + "'" +
             ", desc='" + getDesc() + "'" +
-            ", type='" + getType() + "'" +
+            ", type='" + getTypes() + "'" +
             "}";
     }
 
     public static Card fromCache(JsonObject j) {
         final Card c = new Card();
 
-        c.setName_short(j.getString("name_short"));
         c.setName(j.getString("name"));
         c.setValue(j.getString("value"));
-        c.setValue_int(j.getInt("value_int"));
         c.setMeaning_up(j.getString("meaning_up"));
         c.setMeaning_reverse(j.getString("meaning_reverse"));
         c.setDesc(j.getString("desc"));
-        c.setType(j.getString("type"));
+        c.setTypes(j.getString("types"));
 
 
 
         return c;
     }
 
-    private void setType(String string) {
-        return;
-    }
+
+
+
 
     
     public JsonObject toJSON() {
@@ -136,38 +155,40 @@ public class Card extends CardList {
        card.forEach(v->{
             cardBuilder.add(v);
         });
+        
         JsonArrayBuilder cardListBuilder = Json.createArrayBuilder();
-        cardList.forEach(v->{
+        card.forEach(v->{
              cardListBuilder.add(v);
          });
 
         return Json.createObjectBuilder()
-                .add("cardListId", getCardListId())
-                .add("name_short", getName_short())
+                .add("cardId", getCId())
                 .add("name", getName())
                 .add("value", getValue())
-                .add("value_int", getValue_int())
                 .add("meaning_up", getMeaning_up())
                 .add("meaning_reverse", getMeaning_reverse())
-                .add("type", (JsonValue) getTypes())
+                .add("type", (Types) getTypes())
                 .build();
                 
     }
 
 
     public static Card convert(final CardList cardListResult) {
-        Card c = new Card();
-        c.setCardListId(String.valueOf(((SqlRowSet) cardListResult).getInt("cardList_id")));
+        Card c = new Card(types);
+        c.setCId(String.valueOf(((SqlRowSet) cardListResult).getInt("cid")));
         c.setName(((SqlRowSet) cardListResult).getString("name"));
         c.setValue(((SqlRowSet) cardListResult).getString("value"));
         c.setMeaning_up(((SqlRowSet) cardListResult).getString("meaning_up"));
         c.setMeaning_reverse(((SqlRowSet) cardListResult).getString("meaning_reverse"));
-        c.setTypes(((Object) cardListResult).getTypes("types"));
+        c.setTypes((cardListResult).getTypes());
         return c;
     }
 
     public static Card create(JsonObject jsonObject) {
         return null;
+    }
+
+    public void setCardList(CardList cardListResult) {
     }
     
 
