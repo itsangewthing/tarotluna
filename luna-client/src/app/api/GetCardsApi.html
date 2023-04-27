@@ -1,0 +1,148 @@
+<div class="main-content">
+    <h2><a name=""></a></h2>
+    <p></p>
+  
+    <h2><a name="cardsCourtsRankGet"></a>cardsCourtsRankGet</h2>
+    <hr>
+    <p></p>
+    
+    <h3 class="section">URL</h3>
+    <code>https://rws-cards-api.herokuapp.com/api/v1/cards/courts/{rank}</code>
+    <h3 class="section">HTTP Method</h3>
+    <code>GET</code>
+    <h3 class="section">Response Type</h3>
+    <div class="model" data-model="CardList"><a href="">CardList</a></div>
+    <h3 class="section">Parameters</h3>
+    <ul>
+        <li class="parameter">
+        
+        
+        <span class="param-in">Path: </span>
+        
+        
+        <span class="param-name">rank</span>
+        <span class="param-type">String</span>
+        
+        <p class="param-description"></p>
+        </li>
+    </ul>
+    <h2><a name="cardsGet"></a>cardsGet</h2>
+    <hr>
+    <p></p>
+    
+    <h3 class="section">URL</h3>
+    <code>https://rws-cards-api.herokuapp.com/api/v1/cards</code>
+    <h3 class="section">HTTP Method</h3>
+    <code>GET</code>
+    <h3 class="section">Response Type</h3>
+    <div class="model" data-model="CardList"><a href="">CardList</a></div>
+    <h3 class="section">Parameters</h3>
+    <ul>
+    </ul>
+    <h2><a name="cardsRandomGet"></a>cardsRandomGet</h2>
+    <hr>
+    <p></p>
+    
+    <h3 class="section">URL</h3>
+    <code>https://rws-cards-api.herokuapp.com/api/v1/cards/random</code>
+    <h3 class="section">HTTP Method</h3>
+    <code>GET</code>
+    <h3 class="section">Response Type</h3>
+    <div class="model" data-model="CardList"><a href="">CardList</a></div>
+    <h3 class="section">Parameters</h3>
+    <ul>
+        <li class="parameter">
+        
+        <span class="param-in">Query: </span>
+        
+        
+        
+        <span class="param-name">n</span>
+        <span class="param-type">Integer</span>
+        
+        <p class="param-description">If specified and between 1 and 78, returns n number of unique random cards. Else, returns all cards in random order.</p>
+        </li>
+    </ul>
+    <h2><a name="cardsSearchGet"></a>cardsSearchGet</h2>
+    <hr>
+    <p></p>
+    
+    <h3 class="section">URL</h3>
+    <code>https://rws-cards-api.herokuapp.com/api/v1/cards/search</code>
+    <h3 class="section">HTTP Method</h3>
+    <code>GET</code>
+    <h3 class="section">Response Type</h3>
+    <div class="model" data-model="CardList"><a href="">CardList</a></div>
+    <h3 class="section">Parameters</h3>
+    <ul>
+        <li class="parameter">
+        
+        <span class="param-in">Query: </span>
+        
+        
+        
+        <span class="param-name">q</span>
+        <span class="param-type">String</span>
+        
+        <p class="param-description">Search all for text (case insensitive)</p>
+        </li>
+        <li class="parameter">
+        
+        <span class="param-in">Query: </span>
+        
+        
+        
+        <span class="param-name">suit</span>
+        <span class="param-type">String</span>
+        
+        <p class="param-description">Returns only cards of specified suit. e.g. search?suit&#x3D;wands</p>
+        </li>
+        <li class="parameter">
+        
+        <span class="param-in">Query: </span>
+        
+        
+        
+        <span class="param-name">value</span>
+        <span class="param-type">value</span>
+        
+        <p class="param-description">Returns only cards of specified value, e.g. search?value&#x3D;4</p>
+        </li>
+        <li class="parameter">
+        
+        <span class="param-in">Query: </span>
+        
+        
+        
+        <span class="param-name">type</span>
+        <span class="param-type">String</span>
+        
+        <p class="param-description">Returns only cards of specified type.</p>
+        </li>
+    </ul>
+    <h2><a name="cardsSuitsSuitGet"></a>cardsSuitsSuitGet</h2>
+    <hr>
+    <p></p>
+    
+    <h3 class="section">URL</h3>
+    <code>https://rws-cards-api.herokuapp.com/api/v1/cards/suits/{suit}</code>
+    <h3 class="section">HTTP Method</h3>
+    <code>GET</code>
+    <h3 class="section">Response Type</h3>
+    <div class="model" data-model="CardList"><a href="">CardList</a></div>
+    <h3 class="section">Parameters</h3>
+    <ul>
+        <li class="parameter">
+        
+        
+        <span class="param-in">Path: </span>
+        
+        
+        <span class="param-name">suit</span>
+        <span class="param-type">String</span>
+        
+        <p class="param-description"></p>
+        </li>
+    </ul>
+  </div>
+  

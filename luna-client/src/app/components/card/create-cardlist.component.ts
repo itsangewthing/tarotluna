@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/services/account.service';
 import { TarotService } from 'src/app/services/tarot.service';
 import { Router } from '@angular/router';
+import { FormBuilder } from '@angular/forms';
+
+
 
 
 @Component({
@@ -18,9 +21,10 @@ export class CreateCardlistComponent implements OnInit{
   isLoggedIn: boolean = false
   isLoading: boolean = true
   areas: any;
+  router!: Router;
   
 
-  onstructor(private fb: FormBuilder, private tarotSvc: TarotService, private router: Router, private accSvc: AccountService) { }
+  onstructor(private fb: NewType, private tarotSvc: TarotService, private router: Router, private accSvc: AccountService) { }
 
 
   ngOnInit(): void {
@@ -31,7 +35,7 @@ export class CreateCardlistComponent implements OnInit{
       this.accSvc.userLoggedIn = result.data
       this.isLoading = false;
 
-      this.tarotSvc.getAllAreas()
+      this.tarotSvc.getAllCards()
       .then((result: any)=>{
         this.areas = result;
       })

@@ -1,6 +1,5 @@
-import { Card } from './card';
 
-export interface CardList { 
-    nhits?: number;
-    cards?: Array<Card>;
-}
+
+export * from './card';
+export * from './cardlist';
+export * from './value';

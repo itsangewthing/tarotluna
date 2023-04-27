@@ -12,7 +12,7 @@ category: any;
     meaning_reverse: string;
     desc: string;
     createdBy: string;
-    types: string[];
+    type?: Card.TypeEnum;
     card: string[
         
     ];

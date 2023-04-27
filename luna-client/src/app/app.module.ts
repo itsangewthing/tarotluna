@@ -9,7 +9,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
 import { TarotService } from './services/tarot.service';
 import { AccountService } from './services/account.service';
-import { CreateCardlistComponent } from './components/create-cardlist/create-cardlist.component';
 import { SearchComponent } from './components/search/search.component';
 import { NotFoundComponent } from './components/error/not-found/not-found.component';
 import { SettingsComponent } from './components/account/settings/settings.component';
@@ -17,6 +16,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { CreateComponent } from './components/account/create/create.component';
 import { LoginComponent } from './components/account/login/login.component';
 import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
+import { ListCardsComponent } from './components/list-cards/list-cards.component';
 
 
 
@@ -25,11 +25,10 @@ const appRoutes: Routes =[
   {path:"profile", component: ProfileComponent},
   {path:"account/create", component: CreateComponent},
   {path:"account/settings", component: SettingsComponent},
-  {path:"account/cardlists/create", component:CreateCardlistComponent},
   {path:"search", component:SearchComponent},
-  {path:"cardlist", component: ListRecipesComponent},
-  {path:"cards/category/:cat", component:ListRecipesComponent},
-  {path:"recipes/area/:area", component:ListRecipesComponent},
+  {path:"cardlist", component: ListCardsComponent},
+  {path:"cards/category/:cat", component:ListCardsComponent},
+  {path:"recipes/area/:area", component:ListCardsComponent},
   {path:"card/:user/:cardListId", component:AppComponent},
   {path:"card/:cardListId", component:AppComponent},
   {path:"**", component: NotFoundComponent}
@@ -37,7 +36,6 @@ const appRoutes: Routes =[
 @NgModule({
   declarations: [
     AppComponent,
-    CreateCardlistComponent,
     SearchComponent,
     NotFoundComponent,
     SettingsComponent,
