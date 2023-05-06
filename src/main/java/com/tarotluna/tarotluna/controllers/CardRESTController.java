@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.yaml.snakeyaml.events.Event;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.tarotluna.tarotluna.EmailDetails;
 import com.tarotluna.tarotluna.constants.EmailTemplate;
 import com.tarotluna.tarotluna.constants.URLs;
@@ -47,17 +45,13 @@ public class CardRESTController {
 
     @Autowired
     private TarotService tarotSvc;
-
-    @Autowired
     private CardRepository cardRepo;
-    
-    @Autowired
     private EmailService emailSvc;
 
  // GET ENUMSSSS ------------
 
  // 1-------- TYPES
-    @GetMapping("choose")
+    @GetMapping("chooseTypes")
     public String displayCardTypesForm(Model model){
         model.addAttribute("types", "Choose card types");
         model.addAttribute(new Card());
@@ -66,7 +60,7 @@ public class CardRESTController {
     }
 
      // 2 -------- COURTSRANK
-    @GetMapping("choose")
+    @GetMapping("chooseRank")
     public String displayCourtsRankForm(Model model){
         model.addAttribute("courtsRank", "Choose cards by their ranks");
         model.addAttribute(new Card());
@@ -76,7 +70,7 @@ public class CardRESTController {
     
     //3---------- SUIT
     
-    @GetMapping("choose")
+    @GetMapping("chooseSuit")
     public String displaySuitForm(Model model){
         model.addAttribute("suit", "Choose cards by their suit");
         model.addAttribute(new Card());
@@ -84,11 +78,11 @@ public class CardRESTController {
         return "choose/suit";
     }
 
-    // SEARCH CARD BY NAME
+    // SEARCH CARDS BY NAME
     @GetMapping(path="/cards/search", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> search(@RequestParam("searchName") String searchName) {
-        List<Card> cards = tarotSvc.search(searchName, cards);
-        System.out.println(searchName);
+    public ResponseEntity<String> search(@RequestParam("search") String searchCards) {
+        List<Card> cards = tarotSvc.search(searchCards);
+        System.out.println(cards);
 
         JsonArrayBuilder jab = Json.createArrayBuilder();
         for (int i = 0; i < cards.size(); i++) {
@@ -134,12 +128,12 @@ public class CardRESTController {
             @RequestPart String desc,
             @RequestPart String meaning_up,
             @RequestPart String meaning_reverse,
-            @RequestPart JsonValue Types,
+            @RequestPart Types Types,
             @RequestPart String email) {
 
             Response resp = new Response();
             CardList cl = new CardList(); 
-            cl.setCardList(cl);
+            cl.setCardItems(cl);
             cl.setNhits(nhits);
             cl.setName(name);
             cl.setValue(value);
@@ -153,23 +147,23 @@ public class CardRESTController {
                 final int cardListId = tarotSvc.createCardList(cl, email, file.getBytes());
     
                 if (cardListId > 0) {
-                    String msgBody = EmailTemplate.constructRecipeCreated(
-                                cl.getName(),
+                    String msgBody = EmailTemplate.constructCardListCreated(
+                                cl.getNhits(),
                 
-                                URLs.URL_HOME + "/#/divination/user/" + cardListId);
-                    String subject = "New Divination Created!";
+                                URLs.URL_HOME + "/#/cardlist/user/" + cardListId);
+                    String subject = "New Spread Created!";
                     EmailDetails details = new EmailDetails(email, msgBody, subject);
                     emailSvc.sendEmail(details);
         
                     resp.setCode(HttpStatus.CREATED.value());
-                    resp.setMessage("Divination Created");
+                    resp.setMessage("Spread Created");
                     JsonObject data = Json.createObjectBuilder().add("cardListId", cardListId).build();
                     resp.setData(data);
                     return ResponseEntity.status(HttpStatus.CREATED).body(resp.toJson().toString());
                 } else {
                     //s3Svc.delete(thumbnailOpt.get());
                     resp.setCode(HttpStatus.BAD_REQUEST.value());
-                    resp.setMessage("Something went wrong when reading your divination!");
+                    resp.setMessage("Something went wrong when reading your tarot spread!");
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp.toJson().toString());
                 }
     
@@ -186,7 +180,7 @@ public class CardRESTController {
             if (clOpt.isEmpty()) {
                 return ResponseEntity.notFound().build();
             } else {
-                return ResponseEntity.ok().body(clOpt.get().toJson().toString());
+                return ResponseEntity.ok().body(clOpt.get().toJSON().toString());
             }
         }
     
@@ -200,22 +194,22 @@ public class CardRESTController {
             return ResponseEntity.ok(jArrayBuilder.build().toString());
         }
     
-        @GetMapping(path = "/cardlist/{name}", consumes = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<String> getCardListsByName(@PathVariable String name) {
-            List<CardList> cardlists = tarotSvc.getCardListsByName(name);
-            JsonArrayBuilder jArrayBuilder = Json.createArrayBuilder();
-            cardlists.forEach(v -> {
-                jArrayBuilder.add(v.toJson());
-            });
-            return ResponseEntity.ok(jArrayBuilder.build().toString());
-        }
+        // @GetMapping(path = "/cardlist/{name}", consumes = MediaType.APPLICATION_JSON_VALUE)
+        // public ResponseEntity<String> getCardListsByName(@PathVariable String name) {
+        //     List<CardList> cardlists = tarotSvc.getCardListsByName(name);
+        //     JsonArrayBuilder jArrayBuilder = Json.createArrayBuilder();
+        //     cardlists.forEach(v -> {
+        //         jArrayBuilder.add(v.toJson());
+        //     });
+        //     return ResponseEntity.ok(jArrayBuilder.build().toString());
+        // }
 
 
-        @GetMapping(path = "/cardlists", consumes = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<String> getCardLists(@RequestParam String s) {
-            List<CardList> cardLists = tarotSvc.getCardLists(s);
+        @GetMapping(path = "/cardlist", consumes = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<String> getCardList(@RequestParam String s) {
+            List<CardList> cardList = tarotSvc.getCardLists(s);
             JsonArrayBuilder jArrayBuilder = Json.createArrayBuilder();
-        cardLists.forEach(v->{
+        cardList.forEach(v->{
                 jArrayBuilder.add(v.toJson());
             });
             return ResponseEntity.ok(jArrayBuilder.build().toString());

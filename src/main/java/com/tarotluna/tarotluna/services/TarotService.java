@@ -56,14 +56,7 @@ public class TarotService{
     private static final String GET_THREE_RANDOM_CARDS = "https://tarot-api.onrender.com/api/v1/cards/random?n=3";
     private static final String GET_FIVE_RANDOM_CARDS = "https://tarot-api.onrender.com/api/v1/cards/random?n=5";
     private static final String SELECT_CARD_BY_RANKS = "https://tarot-api.onrender.com/api/v1/cards/courts/{ranks} ";
-    private static final String SELECT_CARD_LIST_BY_ID ="";
-    private static final String SELECT_USERNAME_BY_ID = "";
-    private static final String SELECT_CARDS_BY_ID ="";
-    private static final String SELECT_CARD_LISTS_BY_USER_ID = "";
-    private static final String SELECT_CARD_LISTS_BY_NANE ="";
-    private static final String DELETE_CARD_LIST_BY_ID =" ";
-    private static final String DELETE_CARD_BY_NAME = "";
-    private static final String UPDATE_CARD_LIST = "";
+
 
 /* GET CARD */    
 public List<Card> searchKeyword(String searchKeyword, Object q, Object suit, Object value, Object type) {
@@ -125,7 +118,7 @@ return cList;
 }
 
 /* SEARCH CARDS */    
-public List<Card> search(String searchCards, Object query) {
+public List<Card> search(String searchCards) {
             String uri = UriComponentsBuilder.fromUriString(URL_SEARCH_NAME)
                         .queryParam("q", query)
                         .toUriString();
@@ -356,7 +349,7 @@ public List<Card> getCardByRank(Object rank) {
             return new ArrayList<CardList>();
         }
 
-        return cardRepo.getAllCardListsBy(user.get().getUserId());
+        return cardRepo.getAllCardListsById(user.get().getUserId());
     }
 
 

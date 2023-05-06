@@ -15,21 +15,33 @@ import jakarta.json.JsonValue;
 public class CardList extends Card {
 
 
-
+    private String[] cardList;
     private Integer nhits;
     private String cListId;
-    private List<String> items = new LinkedList<>();
+    private CardList cardItems;
+    private List<String> cards = new LinkedList<>();
 
 
 
-    public CardList(Types types) {
-        super(types);
-        //TODO Auto-generated constructor stub
-    }
+
  ////////////////////////////   
 
-   
- 
+    public List<String> getCards() {
+        return this.cards;
+    }
+
+    public void setCards(List<String> cards) {
+        this.cards = cards;
+    }
+
+    public String[] getCardList() {
+        return this.cardList;
+    }
+
+    public void setCardList(String[] cardList) {
+        this.cardList = cardList;
+    }
+
 
     public Integer getNhits() {
         return this.nhits;
@@ -47,51 +59,46 @@ public class CardList extends Card {
         this.cListId = cListId;
     }
 
-    public List<String> getItems() {
-        return this.items;
+    public CardList getCardItems() {
+        return this.cardItems;
     }
 
-    public void setItems(List<String> items) {
-        List<String> newItemList = new LinkedList<>();
-        for (String i : items){
-            newItemList.add(i);
+    public void setCardItems(CardList cl) {
+        this.cardItems = cl;
+    }
+//////////////////
+     public List<String> getCourtsRank() {
+                return this.getCourtsRank();
+            }
+
+     public void setCourtsRank(List<String> courtsRank) {
+        List<String> newCRList = new LinkedList<>();
+        for (String cr : courtsRank){
+            newCRList.add(cr);
+            }
+            this.cards = courtsRank;
         }
-        
-        this.items = newItemList;
-    }
 
-    
-    //  public List<String> getCourtsRank() {
-    //             return this.getCourtsRank();
-    //         }
+     public List<String> getSuit() {
+                return this.getSuit();
+            }
 
-    //  public void setCourtsRank(List<String> courtsRank) {
-    //     List<String> newCRList = new LinkedList<>();
-    //     for (String cr : courtsRank){
-    //         newCRList.add(cr);
-    //         }
-    //         this.courtsRank = courtsRank;
-    //     }
-
-    //  public List<String> getSuit() {
-    //             return this.suit;
-    //         }
-
-    //   public void setSuit(List<String> suit) {
-    //     List<String> newSList = new LinkedList<>();
-    //     for (String s : suit){
-    //         newSList.add(s);
-    //         }
-    //         this.suit = suit;
-    //     }
+      public void setSuit(List<String> suit) {
+        List<String> newSList = new LinkedList<>();
+        for (String s : suit){
+            newSList.add(s);
+            }
+            this.cards = suit;
+        }
 
            
         
 
-//  ---------------------           
+//  ---------------------       
+
         
         public static List<CardList> getCardListsByName(String name, Integer nhits) {
-            CardList cList = new CardList(null)<>();
+            List<CardList> cList = new LinkedList<>();
             // cList.setNhits(String.valueOf(SqlRowSet) cListResult)
 
         return cList;
@@ -102,7 +109,7 @@ public class CardList extends Card {
                 cList.setCid(jsonObject.getString("clistId", ""));
                 cList.setName(jsonObject.getString("strName", ""));
               
-                return (Card) cList;
+                return (CardList) cList;
             }
         
             private void setCid(String string) {
@@ -125,7 +132,7 @@ public class CardList extends Card {
 
             public JsonArray itemsList() {
                 JsonArrayBuilder jab = Json.createArrayBuilder();
-                for (String nhits : items) {
+                for (String nhits : cards) {
                     jab.add(nhits);
                 }
                 return jab.build();
@@ -148,7 +155,7 @@ public class CardList extends Card {
 				return false;
 			}
 
-
-    
+            public void setEmail(String email) {
+            }
     
 }

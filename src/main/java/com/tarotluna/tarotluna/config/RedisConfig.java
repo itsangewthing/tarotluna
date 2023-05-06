@@ -26,7 +26,7 @@ public class RedisConfig {
     @Value("${spring.redis.password}")
     private String redisPassword;
 
-    @Bean
+    @Bean("cardcache") // match qualifier in cardRepo
     @Scope("singleton")
     public RedisTemplate<String, Object> redisTemplate() {
         

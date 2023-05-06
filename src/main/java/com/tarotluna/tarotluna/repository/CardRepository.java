@@ -35,21 +35,18 @@ public class CardRepository {
 // SQLQUERIES
 
     
-
     @Autowired
+    @Qualifier("cardcache") // match bean name in Redisconfig;
     private JdbcTemplate template;
 
-    private RedisTemplate<String, String> redisTemplate;
-
     public void setKey(String name, JsonObject obj) {
-        ValueOperations<String, String> ops = ((RedisOperations<String, String>) template).opsForValue();
+        ValueOperations<String, String> ops = template.opsForValue();
 
         ops.set(name, obj.toString(), Duration.ofSeconds(3600));
     }
 
-    public Optional<Card> getCards(String name) {
-        // System.out.println(goods_id);
-        ValueOperations<String, String> ops = ((RedisOperations<String, String>) template).opsForValue();
+    public Optional<Card> getCardByName(String name) {
+        ValueOperations<String, String> ops = template.opsForValue();
 
         String value = ops.get(name);
         // System.out.println(value);
@@ -72,27 +69,24 @@ public class CardRepository {
 
  ///////////////////////////////////
 
- private static final String SQL_INSERT_RECIPE = "insert into recipe (name, category, country, instructions, youtubeLink, user_id) values (?, ?, ?, ?, ?, ?);";
- private static final String SQL_INSERT_INGREDIENT = "insert into ingredient (name, measurement, recipe_id) values (?, ?, ?);";
- private static final String SQL_SELECT_RECIPE_BY_ID = "select * from recipe where recipe_id = ?;";
- private static final String SQL_SELECT_RECIPE_BY_USER_ID = "select * from recipe where user_id = ?;";
- private static final String SQL_SELECT_USERNAME_BY_RECIPE_ID = 
- """
- select u.username
- from user as u
- join recipe as r
- on u.user_id = r.user_id
- where r.recipe_id = ?;
- """;
+
+
+ private static final String INSERT_NEW_CARDLIST = "insert into cardlist (nhits, cListId, cardItems) values (?, ?, ?);";
+ private static final String SELECT_USERNAME_BY_ID = "select * from User where user_id = ?;";
+ private static final String SELECT_CARDS_BY_NAME = "select * from card where name = ?;";
+ private static final String SELECT_CARDLISTS_BY_USER_ID = "select * from cardlist where user_id =?;";
+
+ private static final String DELETE_CARDLIST_BY_ID = "delete from cardlist where user_id = ?;";
+ private static final String UPDATE_CARDLIST = "";
+ private static final String DELETE_CARD_BY_NAME = "delete from cardlist where name = ?;";
 
     public int insertNewCardList(byte[] file, int userId) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         template.update(conn -> {
-            try (PreparedStatement ps = conn.prepareStatement(INSERT_NEW_CARD_LIST, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement ps = conn.prepareStatement(INSERT_NEW_CARDLIST, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1,file.getName());
                 ps.setString(2,file.getName_short());
                 ps.setString(3,file.getValue());
-                ps.setInt(4,file.getValue_int());
                 ps.setString(5,file.getMeaning_up());
                 ps.setString(6,file.getMeaning_reverse());
                 ps.setString(7,file.getDesc());    
@@ -106,7 +100,7 @@ public class CardRepository {
         return bigInt.intValue();
     }
 
-    public Integer insertNewCardList(Object object, SqlRowSet sqlRowSet, String insertNewCardList) {
+    public boolean insertNewCardList(Object object, String insertNewCardList) {
         if(object.size() != sqlRowSet.size()) {
             throw new IllegalArgumentException();
         }
@@ -120,7 +114,7 @@ public class CardRepository {
             params.add(row);
         }
 
-        int[] results = template.batchUpdate(INSERT_NEW_CARD_LIST, params);
+        int[] results = template.batchUpdate(INSERT_NEW_CARDLIST, params);
 
         for(int i : results) {
             if(i <= 0) {
@@ -131,22 +125,26 @@ public class CardRepository {
         return true;
     }
 
+    public Integer insertNewCardList(Object object, int userId) {
+		return null;
+	}
 
 
-    public Optional<Card> getCardListById(Integer cardListId) {
-        final CardList cardListResult = template.queryForRowSet(SELECT_CARD_LIST_BY_ID, cardListId);
+
+    public Optional<Card> getCardListById(Integer userId) {
+        final SqlRowSet cardListResult = template.queryForRowSet(SELECT_CARDLISTS_BY_USER_ID, userId);
         
         if(cardListResult.next()) {
             Card c = Card.convert(cardListResult);
 
-            final SqlRowSet username = template.queryForRowSet(SELECT_USERNAME_BY_ID, cardListId);
-            if(username.next()) {
-                c.setCreatedBy(username.getString("username"));
-            } else {
-                return Optional.empty();
-            }
+            final SqlRowSet username = template.queryForRowSet(SELECT_USERNAME_BY_ID, userId);
+            // if(username.next()) {
+            //     c.setCreatedBy(username.getString("username"));
+            // } else {
+            //     return Optional.empty();
+            // }
 
-            final SqlRowSet cListResult = template.queryForRowSet(SELECT_CARDS_BY_ID, cardListId);
+            final SqlRowSet cListResult = template.queryForRowSet(SELECT_CARDS_BY_NAME, userId);
             List<String> cards = new ArrayList<String>();
             List<String> cardList = new ArrayList<String>();
             
@@ -156,7 +154,7 @@ public class CardRepository {
             }
 
             c.setCard(cards);
-            c.setCardList(cardListResult);
+            c.setCardList(cListResult);
 
 
 
@@ -166,8 +164,8 @@ public class CardRepository {
         }
     }
 
-    public List<CardList> getAllCardListsBy(Integer userId) {
-        final SqlRowSet result = template.queryForRowSet(SELECT_CARD_LISTS_BY_USER_ID, userId);
+    public List<CardList> getAllCardListsById(Integer userId) {
+        final SqlRowSet result = template.queryForRowSet(SELECT_CARDLISTS_BY_USER_ID, userId);
 
         List<CardList> cardLists = new ArrayList<>();
 
@@ -179,20 +177,20 @@ public class CardRepository {
         return cardLists;
     }
 
-    public List<CardList> getCardListsByName(String name) {
-        final SqlRowSet result = template.queryForRowSet(SELECT_CARD_LISTS_BY_NAME, "%"+name+"%");
-        List<CardList> cardLists= new ArrayList<>();
-        while(result.next()) {
-            CardList cs = CardList.convert(result);
-            cardLists.add(cs);
-        }
-        return cardLists;
-    }
+//     public List<CardList> getCardListsByName(String name) {
+//         final SqlRowSet result = template.queryForRowSet(SELECT_CARD_LISTS_BY_NAME, "%"+name+"%");
+//         List<CardList> cardLists= new ArrayList<>();
+//         while(result.next()) {
+//             CardList cs = CardList.convert(result);
+//             cardLists.add(cs);
+//         }
+//         return cardLists;
+//     }
 
 
 
     public boolean deleteCardListById(Integer cardListId) {
-        int result = template.update(DELETE_CARD_LIST_BY_ID, cardListId);
+        int result = template.update(DELETE_CARDLIST_BY_ID, cardListId);
         System.out.println("DELETE LIST: " + result);
         return result > 0;
     }
@@ -206,21 +204,23 @@ public class CardRepository {
  
 
     public boolean editCardList(Card card, Integer userId) {
-        int result = template.update(UPDATE_CARD_LIST, 
+        int result = template.update(UPDATE_CARDLIST, 
          card.getCard(),
          card.getCId(),
-         card.getCreatedBy(),
+        //  card.getCreatedBy(),
          card.getDesc(),
-         card.getNhits(),
+         ((CardList) card).getNhits(),
          card.getTypes(),
             userId);
 
         return result > 0;
     }
 
-    public Boolean insertNewCardList(Class<? extends Object> class1, String string) {
-        return null;
-    }
+
+
+//     public Boolean insertNewCardList(Class<? extends Object> class1, String string) {
+//         return null;
+//     }
 
 
     

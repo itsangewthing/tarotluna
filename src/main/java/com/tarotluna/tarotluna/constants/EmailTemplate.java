@@ -3,8 +3,8 @@ package com.tarotluna.tarotluna.constants;
 public class EmailTemplate {
     private static final String WELCOME_MESSAGE = """
         <div style="text-align:center;">
-        <h1>Welcome to Luna Stella</h1>
-        <p>Thank you for joining Lunar Stella, a platform that offers a seamless and interactive experience for anyone interested in tarot readings. 
+        <h1>Welcome to Luna Stellar</h1>
+        <p>Thank you for joining Lunar Stellar, a platform that offers a seamless and interactive experience for anyone interested in tarot readings. 
           </p>
         <p>If you're ready to explore the mystical world of tarot, have your divination read today!</p>
         <p><a href="%s" style="
@@ -15,14 +15,14 @@ public class EmailTemplate {
         cursor: pointer;
         border: none;
         border-radius: 10px;
-        margin: 10px;">Start a divination reading.</a></p>
+        margin: 10px;">Start a tarot reading.</a></p>
         </div>
         """;
     
     private static final String SPREAD_CREATE_MESSAGE = """
         <div style="text-align:center;">
         <h1>Success!</h1>
-        <p>You have created your own %s tarot divination reading and is now available for you to look back on.</p>
+        <p>You have created your own %s tarot spread reading and is now available for you to look back on.</p>
         <p><img src="%s"></p>
         <p><a href="%s" style="
         background-color: white;
@@ -32,14 +32,14 @@ public class EmailTemplate {
         cursor: pointer;
         border: none;
         border-radius: 10px;
-        margin: 10px;">View divination</a></p>
+        margin: 10px;">View Tarot Reading</a></p>
         </div>
         """;
 
     private static final String SPREAD_REMOVED_MESSAGE = """
         <div style="text-align:center;">
-        <h1>Divination Removed</h1>
-        <p>Feel free to add more into your divination collection!</p>
+        <h1>Tarot Reading Removed</h1>
+        <p>Feel free to add more into your tarot spread collection!</p>
         <p><a href="%s" style="
         background-color: white;
         color: black;
@@ -48,7 +48,7 @@ public class EmailTemplate {
         cursor: pointer;
         border: none;
         border-radius: 10px;
-        margin: 10px;">Start a divination reading</a></p>
+        margin: 10px;">Start a tarot reading</a></p>
         </div>
         """;
 
@@ -57,12 +57,12 @@ public class EmailTemplate {
         return WELCOME_MESSAGE.formatted(url);
     }
 
-    public static String constructRecipeCreated(final String cardSpreadName, final String spreadUrl) {
-        return SPREAD_CREATE_MESSAGE.formatted(cardSpreadName, spreadUrl);
+    public static String constructCardListCreated(final Integer integer, final String spreadUrl) {
+        return SPREAD_CREATE_MESSAGE.formatted(integer, spreadUrl);
     }
 
-    public static String constructRecipeRemoved(final String cardSpreadName, final String url) {
-        return SPREAD_REMOVED_MESSAGE.formatted(cardSpreadName, url);
+    public static String constructCardListRemoved(final String SpreadName, final String url) {
+        return SPREAD_REMOVED_MESSAGE.formatted(SpreadName, url);
     }
 
 

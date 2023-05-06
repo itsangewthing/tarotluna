@@ -1,26 +1,43 @@
 package com.tarotluna.tarotluna.models;
 
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+
 public class Spreads extends CardList {
 
-    public Spreads(Types types) {
-        super(types);
-        
-    }
-    private int sId;
-    private String SpreadsName;
+
+    private int spId;
+    private String SpreadName;
 
     
-    public int getsId() {
-        return sId;
+    public int getspId() {
+        return spId;
     }
-    public void setsId(int sId) {
-        this.sId = sId;
+    public void setspId(int spId) {
+        this.spId = spId;
     }
-    public String getSpreadsName() {
-        return SpreadsName;
+    public String getSpreadName() {
+        return SpreadName;
     }
-    public void setSpreadsName(String spreadsName) {
-        SpreadsName = spreadsName;
+    public void setSpreadName(String spreadName) {
+        SpreadName = spreadName;
+    }
+
+    public static Spreads create(SqlRowSet rs){
+        Spreads s = new Spreads(); 
+        s.setspId(((SqlRowSet) s).getInt("id"));
+        s.setSpreadName(rs.getString("SpreadsName"));
+
+        return s;
+    }
+
+    public JsonObject toJson(){
+        return Json.createObjectBuilder()
+                    .add("spId", getspId())
+                    .add("SpreadName", getSpreadName())
+                    .build();
     }
 
     

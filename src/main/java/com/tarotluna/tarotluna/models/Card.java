@@ -10,8 +10,9 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 
-public class Card  {
+public class Card {
    
+
     private List<String> card;
     private List<String> CourtsRank = new LinkedList<>();
     private List<String> Suit = new LinkedList<>();
@@ -23,6 +24,14 @@ public class Card  {
     private String desc;
     private String cId;
     private static Types types;
+  
+    public Types getTypes() {
+        return Card.types;
+    }
+
+    public void setTypes(Types types2) {
+        Card.types = types2;
+    }
     private String img;
 
     public String getImg() {
@@ -33,14 +42,6 @@ public class Card  {
         this.img = img;
     }
 
-
-    public Types getTypes() {
-        return types;
-    }
-
-    public void setTypes(Types types2) {
-        Card.types = types2;
-    }
 
     public List<String> getCard() {
         return this.card;
@@ -126,6 +127,7 @@ public class Card  {
             ", meaning_up='" + getMeaning_up() + "'" +
             ", meaning_reverse='" + getMeaning_reverse() + "'" +
             ", desc='" + getDesc() + "'" +
+            ", cId='" + getCId() +"'" +
             ", type='" + getTypes() + "'" +
             "}";
     }
@@ -138,6 +140,7 @@ public class Card  {
         c.setMeaning_up(j.getString("meaning_up"));
         c.setMeaning_reverse(j.getString("meaning_reverse"));
         c.setDesc(j.getString("desc"));
+        c.setCId(j.getString("cId"));
         c.setTypes(j.getString("types"));
 
 
@@ -145,7 +148,17 @@ public class Card  {
         return c;
     }
 
+    public static Card create(JsonObject j) {
+        final Card c = new Card();
+        c.setName(j.getString("name"));
+        c.setValue(j.getString("value"));
+        c.setMeaning_up(j.getString("meaning_up"));
+        c.setMeaning_reverse(j.getString("meaning_reverse"));
+        c.setDesc(j.getString("desc"));
+        c.setCId(j.getString("cId"));
 
+        return c;
+    }
 
 
 
@@ -167,29 +180,23 @@ public class Card  {
                 .add("value", getValue())
                 .add("meaning_up", getMeaning_up())
                 .add("meaning_reverse", getMeaning_reverse())
-                .add("type", (Types) getTypes())
+                .add("types", getTypes())
                 .build();
                 
     }
 
 
-    public static Card convert(final CardList cardListResult) {
-        Card c = new Card(types);
+    public static Card convert(final SqlRowSet cardListResult) {
+        Card c = new Card();
         c.setCId(String.valueOf(((SqlRowSet) cardListResult).getInt("cid")));
         c.setName(((SqlRowSet) cardListResult).getString("name"));
         c.setValue(((SqlRowSet) cardListResult).getString("value"));
         c.setMeaning_up(((SqlRowSet) cardListResult).getString("meaning_up"));
         c.setMeaning_reverse(((SqlRowSet) cardListResult).getString("meaning_reverse"));
-        c.setTypes((cardListResult).getTypes());
+        c.setTypes(((Card) cardListResult).getTypes());
         return c;
     }
 
-    public static Card create(JsonObject jsonObject) {
-        return null;
-    }
 
-    public void setCardList(CardList cardListResult) {
-    }
     
-
 }
