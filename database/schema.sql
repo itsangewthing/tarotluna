@@ -19,12 +19,13 @@ create table card(
     name_short varchar(16)not null,
     name varchar(64) not null,
     value varchar(16) not null,
-    value_int int not null,
     type varchar(64) not null,
     meaning_up varchar(64) not null, 
     meaning_reverse varchar(64) not null,
     description varchar(128) not null,
-    types ENUM ('Major', 'Minor'DEFAULT'null')not null, 
+    types ENUM ('Major', 'Minor'DEFAULT'null')not null,
+    courtsRank ENUM ('Queen', 'Queens', 'King', 'Kings', 'Knight','Knights','Page','Pages'DEFAULT'null')not null, 
+    suit ENUM('Wands','Swords', 'Cups', 'Pentacles'DEFAULT'null')not null,
     'Cardlist' JSON, 
     primary key(card_id),
     constraint fk_card_id
@@ -32,9 +33,9 @@ create table card(
         references name(card_id)
 );
 
-CREATE TABLE Cardlist (
+CREATE TABLE cardlist (
      nhits int not null auto_increment,
-    'card_id' int NOT NULL auto_increment,
+    'cardlist_id' int NOT NULL auto_increment,
          primary key(nhits),
         constraint fk_cards
         foreign key(cards)

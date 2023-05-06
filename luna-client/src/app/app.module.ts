@@ -17,6 +17,8 @@ import { CreateComponent } from './components/account/create/create.component';
 import { LoginComponent } from './components/account/login/login.component';
 import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
 import { ListCardsComponent } from './components/list-cards/list-cards.component';
+import { CardComponent } from './components/card/card.component';
+import { CreateCardlistComponent } from './components/card/create-cardlist.component';
 
 
 
@@ -27,8 +29,8 @@ const appRoutes: Routes =[
   {path:"account/settings", component: SettingsComponent},
   {path:"search", component:SearchComponent},
   {path:"cardlist", component: ListCardsComponent},
-  {path:"cards/category/:cat", component:ListCardsComponent},
-  {path:"recipes/area/:area", component:ListCardsComponent},
+  {path:"cards/courtsRank", component:ListCardsComponent},
+  {path:"cards/suit", component:ListCardsComponent},
   {path:"card/:user/:cardListId", component:AppComponent},
   {path:"card/:cardListId", component:AppComponent},
   {path:"**", component: NotFoundComponent}
@@ -41,7 +43,11 @@ const appRoutes: Routes =[
     SettingsComponent,
     ProfileComponent,
     CreateComponent,
-  
+    CardComponent,
+    CreateCardlistComponent,
+    SettingsComponent,
+    LoginComponent,
+    ListCardsComponent,
   ],
   imports: [
     BrowserModule,

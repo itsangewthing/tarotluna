@@ -29,8 +29,8 @@ public class Card {
         return Card.types;
     }
 
-    public void setTypes(Types types2) {
-        Card.types = types2;
+    public void setTypes(Types string) {
+        Card.types = string;
     }
     private String img;
 

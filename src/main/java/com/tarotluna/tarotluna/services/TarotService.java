@@ -118,7 +118,7 @@ return cList;
 }
 
 /* SEARCH CARDS */    
-public List<Card> search(String searchCards) {
+public List<Card> search(String searchCards, Object query) {
             String uri = UriComponentsBuilder.fromUriString(URL_SEARCH_NAME)
                         .queryParam("q", query)
                         .toUriString();
@@ -245,7 +245,7 @@ public List<Card> search(String searchCards) {
         }
 
 /* SELECT ALL COURT RANKS */
-// https://tarot-api.onrender.com/api/v1/cards/search?q=q
+// https://tarot-api.onrender.com/api/v1/cards/courts/{rank}
 
 public List<Card> getCardByRank(Object rank) {
             

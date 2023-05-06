@@ -7,26 +7,26 @@
                     <mat-spinner *ngIf="isLoading"></mat-spinner>
                 </p>
                 <div class="row">
-                    <div class="col-md-auto" *ngFor="let c of cardLists">
-                        <p><a *ngIf="!c.user" [routerLink]="['/cardLists', c.cardListsId]"> </a></p>
-                        <p><a *ngIf="c.user" [routerLink]="['/cardLists/user', c.cardListId]"></a></p>
+                    <div class="col-md-auto" *ngFor="let c of cardList">
+                        <p><a *ngIf="!c.user" [routerLink]="['/cardlist', c.cardListsId]"> </a></p>
+                        <p><a *ngIf="c.user" [routerLink]="['/cardlist/user', c.cardListId]"></a></p>
 
-                        <p><a *ngIf="!c.user" [routerLink]="['/cardList', c.cardListId]"><span style="
+                        <p><a *ngIf="!c.user" [routerLink]="['/cardlist', c.cardListId]"><span style="
                                 display:inline-block;
                                 white-space: nowrap;
                                 overflow: hidden;
                                 text-overflow: ellipsis;
                                 max-width: 20ch;">{{c.name}}</span></a></p>
-                        <p><a *ngIf="r.user" [routerLink]="['/cardList/user', c.cardListId]"><span style="
+                        <p><a *ngIf="c.user" [routerLink]="['/cardlist/user', c.cardListId]"><span style="
                                 display:inline-block;
                                 white-space: nowrap;
                                 overflow: hidden;
                                 text-overflow: ellipsis;
-                                max-width: 20ch;">{{r.name}}</span></a></p>
+                                max-width: 20ch;">{{c.name}}</span></a></p>
                     </div>
                 </div>
             </div>
-            <div *ngIf="recipes.length === 0 && !isLoading">
+            <div *ngIf="cardList.length === 0 && !isLoading">
                 <p>Your search <em><span>{{this.query}}</span></em> did not match any
                     listings. Try another search.</p>
             </div>

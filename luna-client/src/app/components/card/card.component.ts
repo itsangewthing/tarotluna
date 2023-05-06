@@ -11,7 +11,7 @@ import { User } from 'src/app/models/user';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css']
 })
-export class RecipeComponent implements OnInit {
+export class CardComponent implements OnInit {
 
   card!: Card
   isLoading: boolean = true;

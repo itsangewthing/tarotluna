@@ -17,18 +17,18 @@ export class ListCardsComponent {
 
   ngOnInit(): void {
     // query from links
-    const suite = this.activatedRoute.snapshot.params['suite']
-    const courts = this.activatedRoute.snapshot.params['courts']
-    console.info("suite ", suite)
-    console.info("courts ", courts)
-    if(suite) {
-      this.tarotSvc.getCardsByCategory(suite)
+    const suit = this.activatedRoute.snapshot.params['suit']
+    const courtsrank = this.activatedRoute.snapshot.params['courtsrank']
+    console.info("suit ", suit)
+    console.info("courtsrank ", courtsrank)
+    if(suit) {
+      this.tarotSvc.getCardsBySuit(suit)
       .then(result=>{
-        console.info(suite)
+        console.info(suit)
         this.cards.push(...result)
       })
       .then(result=>{
-        this.tarotSvc.getCardsByCategory(suite)
+        this.tarotSvc.getCardsByCourtsRank(suit)
         .then(result=>{
           result.forEach(v=>{
             v.user = true
@@ -48,18 +48,31 @@ export class ListCardsComponent {
 
       return;
 
-    } 
+    } else if(courtsrank) {
+        this.tarotSvc.getCardsByCourtsRank(courtsrank)
+        .then(result=>{this.cards.push(...result)})
+        .then(result=>{result.cards.forEach(v=> {v.user = true})
+        this.cards.push(...result)
+        this.isLoading = false;
+        }).catch(error=>{
+          console.error(">>> error:", error)
+          this.isLoading=false;
+        }).catch(error=>{
+          this.isLoading = false;
+        })
+      return;
+    }
 
     // query from search
-    this.query = localStorage.getItem('query') ?? ''
+    this.query = localStorage.getItem("cards") ?? ''
     if (this.query) {
-      this.tarotSvc.get(this.query)
-        .then(result => {
+      this.tarotSvc.getAllCards(this.query)
+        .then((result: any) => {
           console.log(result)
           this.cardList = result
         })
         .then(result => {
-          this.tarotSvc.getCardsByName(this.query)
+          this.tarotSvc.searchCardsByName(this.query)
           .then(result => {
             result.forEach(v=>{
               v.user = true
@@ -72,7 +85,7 @@ export class ListCardsComponent {
             this.isLoading = false;
           })
         })
-        .catch(error => {
+        .catch((error: any) => {
           console.error(">>> error: ", error)
           this.isLoading = false;
         })

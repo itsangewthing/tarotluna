@@ -7,5 +7,14 @@ public enum Suit {
 
     Suit(String suit){this.suit = suit; }
 
-    public String getSuit(){return suit;}
+    public String getSuit(){return this.suit;}
+
+    public static Suit fromString(String suit){
+        for(Suit s : Suit.values()){
+            if(s.suit.equalsIgnoreCase(suit)){
+                return s;
+            }
+        }
+        return null;
+    }
 }

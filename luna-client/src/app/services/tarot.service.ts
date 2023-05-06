@@ -20,8 +20,8 @@ export class TarotService {
     constructor(private httpClient: HttpClient) { }
 
 // 1------------- SEARCH CARDS BY NAME
-      searchCardsByName(searchName: string): Promise<Card[]>{
-        const params = new HttpParams().set("searchName", searchName)
+      searchCardsByName(searchCard: string): Promise<Card[]>{
+        const params = new HttpParams().set("searchCard", searchCard)
 
             const headers = new HttpHeaders()
                                 .set('content-type', 'application/json')
@@ -36,7 +36,7 @@ export class TarotService {
             .set('Accept', 'application/json')
             .set('Content-Type', 'application/json')
         return firstValueFrom(
-            this.httpClient.get<CardList[]>(`/api/v1/cardlist/${name}`, { headers })
+            this.httpClient.get<CardList[]>(`#/cardlist/${name}`, { headers })
         )
     }
 
@@ -44,13 +44,13 @@ export class TarotService {
 
     createCardList(formData: FormData): Promise<Response> {
         return firstValueFrom(
-            this.httpClient.post<Response>('#/divination/user/', formData)
+            this.httpClient.post<Response>('#/cardlist/user/', formData)
         )
     }
 
     editCardList(formData: FormData): Promise<Response> {
         return firstValueFrom(
-            this.httpClient.put<Response>('#/divination/{user}/{cardListid}', formData)
+            this.httpClient.put<Response>('#/cardlist/{user}/{cardListid}', formData)
         )
     }
 
@@ -59,7 +59,7 @@ export class TarotService {
             .set('Accept', 'application/json')
             .set('Content-Type', 'application/json')
         return firstValueFrom(
-            this.httpClient.get<Card>(`/api/divination/cardList/${cardListId}`, { headers })
+            this.httpClient.get<Card>(`#/cardlist/${cardListId}`, { headers })
         )
     }
 
@@ -69,22 +69,28 @@ export class TarotService {
             .set('Content-Type', 'application/json')
         const params = new HttpParams().set('email', email)
         return firstValueFrom(
-            this.httpClient.get<CardList[]>(`/api/v1/cardlists/{email}`, { headers, params })
+            this.httpClient.get<CardList[]>(`#/cardlist/{email}`, { headers, params })
         )
     }
 
-    deleteCardListById(CardListId: BigInteger, email: string): Promise<Response> {
+    deleteCardListByEmail(CardListId: BigInteger, email: string): Promise<Response> {
         const headers = new HttpHeaders()
             .set('Accept', 'application/json')
             .set('Content-Type', 'application/json')
         return firstValueFrom(
-            this.httpClient.delete<Response>(`/api/v1/card/cardlists/${CardListId}`, { headers, body: email })
+            this.httpClient.delete<Response>(`#/cardlist/${email}`, { headers, body: email })
         )
     }
 
-    searchName(searchName: string) {
+    getCardsBySuit(suit: string) {
         return firstValueFrom(
-            this.httpClient.get<Card[]>(`/api/v1/cards/searchName`)
+            this.httpClient.get<Card[]>(`/api/v1/cards/{suit}`)
+        )
+    }
+
+    getCardsByCourtsRank(courtsRank: string) {
+        return firstValueFrom(
+            this.httpClient.get<Card[]>(`/api/v1/cards/{rank}`)
         )
     }
 
@@ -97,7 +103,7 @@ export class TarotService {
 
     getCardLists(cardlists: String) {
         return firstValueFrom(
-            this.httpClient.get<Card[]>(`/cardlists`)
+            this.httpClient.get<Card[]>(`/cardlist`)
         )
     }
 
@@ -107,7 +113,7 @@ export class TarotService {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         return firstValueFrom(
-            this.httpClient.get<string[]>('/api/mealdb/areas', { headers})
+            this.httpClient.get<string[]>('/cards', { headers})
         )
     }
 
